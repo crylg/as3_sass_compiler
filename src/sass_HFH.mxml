@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="636" height="400" creationComplete="initializeHandler(event)">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			private var _np:NativeProcessExample;
+			
+			
+			protected function button_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				_np.setupAndLaunch(inputSass.text,inputCss.text,state);
+				
+			}
+			
+			
+			protected function initializeHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				_np=new NativeProcessExample();
+				NativeDragManager.acceptDragDrop(inputSass);
+				inputSass.addEventListener(NativeDragEvent.NATIVE_DRAG_ENTER,onDragIn);
+				inputSass.addEventListener(NativeDragEvent.NATIVE_DRAG_DROP,drag_drap_handler);
+			}
+			
+			protected function drag_drap_handler(event:NativeDragEvent):void
+			{
+				// TODO Auto-generated method stub
+				var dropfiles:Array= event.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;	
+				var file:File = dropfiles[0];	
+				inputSass.text=(file.url.substr(8));
+				inputCss.text=inputSass.text.split(".scss")[0]+".css";
+				btn.enabled=true;
+			}
+			
+			protected function onDragIn(event:NativeDragEvent):void
+			{
+				// TODO Auto-generated method stub
+				trace("haha")
+				NativeDragManager.acceptDragDrop(inputSass);
+				var a=event;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:TextInput id="inputSass" x="194" y="63" width="376" height="80" prompt="别看我这么大,只是为了方便拖拽文件"/>
+	<s:TextInput id="inputCss" x="194" y="162" width="376" prompt="给记不住命令行的同事用"/>
+	<s:Label x="48" y="105" text="要转换的sass文件地址:"/>
+	<s:Label x="99" y="167" text="目标CSS地址:"/>
+	<s:Button id="btn" x="500" y="233" label="转换" click="button_clickHandler(event)" enabled="false"/>
+	<s:Label id="state" x="48" y="33" fontSize="22" text="状态"/>
+</s:WindowedApplication>
